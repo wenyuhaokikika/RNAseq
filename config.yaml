@@ -1,0 +1,236 @@
+# reference
+genome:
+  fasta: /data/wenyuhao/55/gencodegenes/GRCh38.p13.genome.fa
+  star_index: /data/wenyuhao/55/gencodegenes/index
+  gtf: /data/wenyuhao/55/gencodegenes/gencode.v41.annotation.gtf
+  geneset:
+    go: /data/wenyuhao/GSEA/c5.go.v2022.1.Hs.symbols.gmt
+    kegg: /data/wenyuhao/GSEA/c2.cp.kegg.v2022.1.Hs.symbols.gmt
+
+# output plots formats
+plot_formats:
+  - pdf
+  - png
+
+# workspace for all jobs to run the pipeline
+# all of your output will be place in this dir
+workspace: /data/wenyuhao/tmp/RNAseq/out1
+
+samples:
+  293F_rep1:
+    fastq:
+      lib1:
+        fq1: /data/wenyuhao/tmp/fasgz/SRR10129609_1.fastq.gz
+        fq2: /data/wenyuhao/tmp/fasgz/SRR10129609_2.fastq.gz
+    meta:
+      cell: 293F
+      rep: rep1
+      group: 293F
+  293F_rep2:
+    fastq:
+      lib1:
+        fq1: /data/wenyuhao/tmp/fasgz/SRR10129629_1.fastq.gz
+        fq2: /data/wenyuhao/tmp/fasgz/SRR10129629_1.fastq.gz
+    meta:
+      cell: 293F
+      rep: rep2
+      group: 293F
+  293F_rep3:
+    fastq:
+      lib1:
+        fq1: /data/wenyuhao/tmp/fasgz/SRR10129630_1.fastq.gz
+        fq2: /data/wenyuhao/tmp/fasgz/SRR10129630_2.fastq.gz
+    meta:
+      cell: 293F
+      rep: rep3
+      group: 293F
+
+  293E_rep1:
+    fastq:
+      lib1:
+        fq1: /data/wenyuhao/tmp/fasgz/SRR10129610_1.fastq.gz
+        fq2: /data/wenyuhao/tmp/fasgz/SRR10129610_2.fastq.gz
+    meta:
+      cell: 293E
+      rep: rep1
+      group: 293E
+  293E_rep2:
+    fastq:
+      lib1:
+        fq1: /data/wenyuhao/tmp/fasgz/SRR10129611_1.fastq.gz
+        fq2: /data/wenyuhao/tmp/fasgz/SRR10129611_1.fastq.gz
+    meta:
+      cell: 293E
+      rep: rep2
+      group: 293E
+  293E_rep3:
+    fastq:
+      lib1:
+        fq1: /data/wenyuhao/tmp/fasgz/SRR10129612_1.fastq.gz
+        fq2: /data/wenyuhao/tmp/fasgz/SRR10129612_2.fastq.gz
+    meta:
+      cell: 293E
+      rep: rep3
+      group: 293E
+
+  293T_rep1:
+    fastq:
+      lib1:
+        fq1: /data/wenyuhao/tmp/fasgz/SRR10129623_1.fastq.gz
+        fq2: /data/wenyuhao/tmp/fasgz/SRR10129623_2.fastq.gz
+    meta:
+      cell: 293T
+      rep: rep1
+      group: 293T
+  293T_rep2:
+    fastq:
+      lib1:
+        fq1: /data/wenyuhao/tmp/fasgz/SRR10129624_1.fastq.gz
+        fq2: /data/wenyuhao/tmp/fasgz/SRR10129624_1.fastq.gz
+    meta:
+      cell: 293T
+      rep: rep2
+      group: 293T
+  293T_rep3:
+    fastq:
+      lib1:
+        fq1: /data/wenyuhao/tmp/fasgz/SRR10129625_1.fastq.gz
+        fq2: /data/wenyuhao/tmp/fasgz/SRR10129625_2.fastq.gz
+    meta:
+      cell: 293T
+      rep: rep3
+      group: 293T
+
+  293H_rep1:
+    fastq:
+      lib1:
+        fq1: /data/wenyuhao/tmp/fasgz/SRR10129626_1.fastq.gz
+        fq2: /data/wenyuhao/tmp/fasgz/SRR10129626_2.fastq.gz
+    meta:
+      cell: 293H
+      rep: rep1
+      group: 293H
+  293H_rep2:
+    fastq:
+      lib1:
+        fq1: /data/wenyuhao/tmp/fasgz/SRR10129627_1.fastq.gz
+        fq2: /data/wenyuhao/tmp/fasgz/SRR10129627_1.fastq.gz
+    meta:
+      cell: 293H
+      rep: rep2
+      group: 293H
+  293H_rep3:
+    fastq:
+      lib1:
+        fq1: /data/wenyuhao/tmp/fasgz/SRR10129628_1.fastq.gz
+        fq2: /data/wenyuhao/tmp/fasgz/SRR10129628_2.fastq.gz
+    meta:
+      cell: 293H
+      rep: rep3
+      group: 293H
+
+  HEK293_rep1:
+    fastq:
+      lib1:
+        fq1: /data/wenyuhao/tmp/fasgz/SRR10129615_1.fastq.gz
+        fq2: /data/wenyuhao/tmp/fasgz/SRR10129615_2.fastq.gz
+    meta:
+      cell: HEK293
+      rep: rep1
+      group: HEK293
+  HEK293_rep2:
+    fastq:
+      lib1:
+        fq1: /data/wenyuhao/tmp/fasgz/SRR10129616_1.fastq.gz
+        fq2: /data/wenyuhao/tmp/fasgz/SRR10129616_1.fastq.gz
+    meta:
+      cell: HEK293
+      rep: rep2
+      group: HEK293
+  HEK293_rep3:
+    fastq:
+      lib1:
+        fq1: /data/wenyuhao/tmp/fasgz/SRR10129617_1.fastq.gz
+        fq2: /data/wenyuhao/tmp/fasgz/SRR10129617_2.fastq.gz
+    meta:
+      cell: HEK293
+      rep: rep3
+      group: HEK293
+
+  Freestyle293F_rep1:
+    fastq:
+      lib1:
+        fq1: /data/wenyuhao/tmp/fasgz/SRR10129618_1.fastq.gz
+        fq2: /data/wenyuhao/tmp/fasgz/SRR10129618_2.fastq.gz
+    meta:
+      cell: Freestyle293F
+      rep: rep1
+      group: Freestyle293F
+  Freestyle293F_rep2:
+    fastq:
+      lib1:
+        fq1: /data/wenyuhao/tmp/fasgz/SRR10129621_1.fastq.gz
+        fq2: /data/wenyuhao/tmp/fasgz/SRR10129621_1.fastq.gz
+    meta:
+      cell: Freestyle293F
+      rep: rep2
+      group: Freestyle293F
+  Freestyle293F_rep3:
+    fastq:
+      lib1:
+        fq1: /data/wenyuhao/tmp/fasgz/SRR10129622_1.fastq.gz
+        fq2: /data/wenyuhao/tmp/fasgz/SRR10129622_2.fastq.gz
+    meta:
+      cell: Freestyle293F
+      rep: rep3
+      group: Freestyle293F
+# comparisons
+comparisons:
+  HEK293_vs_Freestyle293F:
+    condition: group
+    numerator: HEK293
+    denominator: Freestyle293F
+  293F_vs_Freestyle293F:
+    condition: group
+    numerator: 293F
+    denominator: Freestyle293F
+  293F_vs_293E:
+    condition: group
+    numerator: 293F
+    denominator: 293E
+  293F_vs_293T:
+    condition: group
+    numerator: 293F
+    denominator: 293T
+  293F_vs_293H:
+    condition: group
+    numerator: 293F
+    denominator: 293H
+  293E_vs_293T:
+    condition: group
+    numerator: 293E
+    denominator: 293T
+  293E_vs_293H:
+    condition: group
+    numerator: 293E
+    denominator: 293H
+  293T_vs_293H:
+    condition: group
+    numerator: 293T
+    denominator: 293H
+  HEK293_vs_293F:
+    condition: group
+    numerator: HEK293
+    denominator: 293F
+  HEK293_vs_293E:
+    condition: group
+    numerator: HEK293
+    denominator: 293E
+  HEK293_vs_293T:
+    condition: group
+    numerator: HEK293
+    denominator: 293T
+  HEK293_vs_293H:
+    condition: group
+    numerator: HEK293
+    denominator: 293H
