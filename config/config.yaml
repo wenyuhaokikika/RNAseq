@@ -1,0 +1,27 @@
+samples: config/samples.tsv
+units: config/units.tsv
+
+# reference
+genome:
+  fasta: /data/wenyuhao/55/gencodegenes/GRCh38.p13.genome.fa
+  star_index: /data/wenyuhao/55/gencodegenes/index
+  gtf: /data/wenyuhao/55/gencodegenes/gencode.v41.annotation.gtf
+  geneset:
+    go: /data/wenyuhao/GSEA/c5.go.v2022.1.Hs.symbols.gmt
+    kegg: /data/wenyuhao/GSEA/c2.cp.kegg.v2022.1.Hs.symbols.gmt
+
+reference:
+  version: GRCh38
+  release: 104
+  refDir: /data/wenyuhao/55/GEO/bone/RNAseq/reference
+
+# output plots formats
+plot_formats:
+  - pdf
+  - png
+
+threads: 20
+
+# workspace for all jobs to run the pipeline
+# all of your output will be place in this dir
+workspace: /data/wenyuhao/55/GEO/bone/RNAseq/results
