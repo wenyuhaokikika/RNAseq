@@ -1,0 +1,3 @@
+# sample是样本ID，unit重复次数，library是文库名称，platform作为测序平台，fq1和fq2分别为双端测序的两个fastq文件
+sample	unit	library	platform	fq1	fq2
+samplesName	1	GSE	Illumina	/path/smaple_1.fastq.gz	/path/sample_1.fastq.gz

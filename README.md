@@ -1,3 +1,6 @@
-# RNAseq
+# RNA-seq pipeline
 
-pipeline from [TCGA pipeline](https://docs.gdc.cancer.gov/Data/Bioinformatics_Pipelines/Expression_mRNA_Pipeline/)
+## run
+```sh
+snakemake --cores all
+```

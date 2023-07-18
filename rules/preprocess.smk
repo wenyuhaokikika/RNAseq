@@ -9,17 +9,16 @@
 import os
 rule trim:
     output:
-        fq1=config['workspace'] + '/samples/{sample}/preprocess/{library}_r1_trimed.fq.gz',
-        fq2=config['workspace'] + '/samples/{sample}/preprocess/{library}_r2_trimed.fq.gz',
-        json=config['workspace'] + '/samples/{sample}/qc/{library}_fastp.json',
-        html=config['workspace'] + '/samples/{sample}/qc/{library}_fastp.html'
+        fq1=config['workspace'] + '/samples/{sample}/preprocess/{unit}_r1_trimed.fq.gz',
+        fq2=config['workspace'] + '/samples/{sample}/preprocess/{unit}_r2_trimed.fq.gz',
+        json=config['workspace'] + '/samples/{sample}/qc/{unit}_fastp.json',
+        html=config['workspace'] + '/samples/{sample}/qc/{unit}_fastp.html'
     input:
-        fq1=lambda wildcards: config['samples'][wildcards.sample]['fastq'][wildcards.library]['fq1'],
-        fq2=lambda wildcards: config['samples'][wildcards.sample]['fastq'][wildcards.library]['fq2']
+        unpack(get_fastq)
     log:
-        config['workspace'] + '/log/preprocess/{sample}/{library}_fastp.log'
+        config['workspace'] + 'log/preprocess/{sample}/{unit}_fastp.log'
     threads:
-        15 if workflow.cores > 15 else workflow.cores
+        workflow.cores
     shell:
         'fastp -w {threads} -i {input.fq1} -I {input.fq2}'
         ' -o {output.fq1} -O {output.fq2}'

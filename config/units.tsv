@@ -1,0 +1,16 @@
+# sample是样本ID，unit重复次数，library是文库名称，platform作为测序平台，fq1和fq2分别为双端测序的两个fastq文件
+sample	unit	library	platform	fq1	fq2
+SRR22500389	1	GSE219215	Illumina NovaSeq 6000	/data/wenyuhao/55/run/RNAseq/bone/SRR22500389_1.fastq.gz	/data/wenyuhao/55/run/RNAseq/bone/SRR22500389_2.fastq.gz
+SRR22500390	1	GSE219215	Illumina NovaSeq 6000	/data/wenyuhao/55/run/RNAseq/bone/SRR22500390_1.fastq.gz	/data/wenyuhao/55/run/RNAseq/bone/SRR22500390_2.fastq.gz
+SRR22500391	1	GSE219215	Illumina NovaSeq 6000	/data/wenyuhao/55/run/RNAseq/bone/SRR22500391_1.fastq.gz	/data/wenyuhao/55/run/RNAseq/bone/SRR22500391_2.fastq.gz
+SRR22500392	1	GSE219215	Illumina NovaSeq 6000	/data/wenyuhao/55/run/RNAseq/bone/SRR22500392_1.fastq.gz	/data/wenyuhao/55/run/RNAseq/bone/SRR22500392_2.fastq.gz
+SRR22500397	1	GSE219215	Illumina NovaSeq 6000	/data/wenyuhao/55/run/RNAseq/bone/SRR22500397_1.fastq.gz	/data/wenyuhao/55/run/RNAseq/bone/SRR22500397_2.fastq.gz
+SRR22500398	1	GSE219215	Illumina NovaSeq 6000	/data/wenyuhao/55/run/RNAseq/bone/SRR22500398_1.fastq.gz	/data/wenyuhao/55/run/RNAseq/bone/SRR22500398_2.fastq.gz
+SRR22500399	1	GSE219215	Illumina NovaSeq 6000	/data/wenyuhao/55/run/RNAseq/bone/SRR22500399_1.fastq.gz	/data/wenyuhao/55/run/RNAseq/bone/SRR22500399_2.fastq.gz
+SRR22500400	1	GSE219215	Illumina NovaSeq 6000	/data/wenyuhao/55/run/RNAseq/bone/SRR22500400_1.fastq.gz	/data/wenyuhao/55/run/RNAseq/bone/SRR22500400_2.fastq.gz
+SRR10129615	1	PRJNA565658	Illumina HiSeq 2000	/data/wenyuhao/55/run/RNAseq/hek293t/SRR10129615_1.fastq.gz	/data/wenyuhao/55/run/RNAseq/hek293t/SRR10129615_2.fastq.gz
+SRR10129616	1	PRJNA565658	Illumina HiSeq 2000	/data/wenyuhao/55/run/RNAseq/hek293t/SRR10129616_1.fastq.gz	/data/wenyuhao/55/run/RNAseq/hek293t/SRR10129616_2.fastq.gz
+SRR10129617	1	PRJNA565658	Illumina HiSeq 2000	/data/wenyuhao/55/run/RNAseq/hek293t/SRR10129617_1.fastq.gz	/data/wenyuhao/55/run/RNAseq/hek293t/SRR10129617_2.fastq.gz
+SRR10129623	1	PRJNA565658	Illumina HiSeq 2000	/data/wenyuhao/55/run/RNAseq/hek293t/SRR10129623_1.fastq.gz	/data/wenyuhao/55/run/RNAseq/hek293t/SRR10129623_2.fastq.gz
+SRR10129624	1	PRJNA565658	Illumina HiSeq 2000	/data/wenyuhao/55/run/RNAseq/hek293t/SRR10129624_1.fastq.gz	/data/wenyuhao/55/run/RNAseq/hek293t/SRR10129624_2.fastq.gz
+SRR10129625	1	PRJNA565658	Illumina HiSeq 2000	/data/wenyuhao/55/run/RNAseq/hek293t/SRR10129625_1.fastq.gz	/data/wenyuhao/55/run/RNAseq/hek293t/SRR10129625_2.fastq.gz

@@ -8,10 +8,12 @@
 '''
 
 # here put the import lib
+include: 'rules/common.smk'
+include: 'rules/ref.smk'
 include: 'rules/preprocess.smk'
 include: 'rules/mapping.smk'
 include: 'rules/aggregate.smk'
-include: 'rules/comparison.smk'
+#include: 'rules/comparison.smk'
 
 
 import os
@@ -21,19 +23,16 @@ BASE_DIR = os.path.dirname(workflow.snakefile)
 
 rule all:
     input:
+        # rules.genome.output.fasta,
+        # rules.genome.output.gtf,
+        # rules.sequenceDownload.output.cdna,
+        # rules.sequenceDownload.output.pep,
+        # rules.sequenceDownload.output.cds,
+        rules.STARindex.output,
+        rules.annotation.output,
+        [refPath(i) for i in ['genome.fa.gz','genome.gtf.gz','cdna.fa.gz','pep.fa.gz','cds.fa.gz']],
+        # [directory(refPath(i)) for i in ['STARindex','annotation']],
         expand(
             config['workspace'] + '/aggregate/all_sample_{set}_{out}.txt',
-            set=['all', 'ccds'], out=['raw_counts', 'fpkm','tpm', 'tpm_qnorm']
-        ),
-        expand(
-            config['workspace'] + '/aggregate/all_sample_{set}_pcaplot.{fmt}',
-            fmt=config['plot_formats'], set=['all', 'ccds']
-        ),
-        expand(
-            config['workspace'] + '/comparisons/{comparison}/{comparison}_{set}_result.txt',
-            comparison=config['comparisons'], set=['all', 'ccds']
-        ),
-        expand(
-            config['workspace'] + '/comparisons/{comparison}/{comparison}_gsea_{geneset}',
-            comparison=config['comparisons'], geneset=config['genome']['geneset']
+            set=['transcript','gene'], out=['raw_counts', 'fpkm','tpm']
         )

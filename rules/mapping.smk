@@ -6,28 +6,36 @@
 @Contact :   925201392@qq.com
 @Desc    :   None
 '''
-
 # here put the import lib
+
+def get_LB_PL(wildcards):
+    d = units[units['sample'] == wildcards.sample].iloc[0].to_dict()
+    return d['library'],d['platform']
+
+def get_key(key,wildcards):
+    return units[units['sample'] == wildcards.sample].iloc[0].to_dict()[key]
 
 import os
 rule mapping:
     output:
-        config['workspace'] + '/samples/{sample}/mapping/{library}_Aligned.out.bam'
+        config['workspace'] + '/samples/{sample}/mapping/{unit}_Aligned.out.bam'
     input:
         fq1=rules.trim.output.fq1,
         fq2=rules.trim.output.fq2
     log:
-        config['workspace'] + '/log/mapping/{sample}/{library}_star.log'
+        config['workspace'] + '/log/mapping/{sample}/{unit}_star.log'
     params:
-        genome_dir=config['genome']['star_index'],
-        prefix=config['workspace'] + '/samples/{sample}/mapping/{library}_'
+        library = partial(get_key,'library'),
+        platform = partial(get_key,'platform'),
+        genome_dir= rules.STARindex.output,
+        prefix=config['workspace'] + '/samples/{sample}/mapping/{unit}_'
     threads:
-        20 if workflow.cores > 20 else workflow.cores
+        workflow.cores #20 if workflow.cores > 20 else workflow.cores
     priority:
         10
     shell:
         'STAR --readFilesIn {input.fq1} {input.fq2}'
-        ' --outSAMattrRGline ID:{wildcards.library} SM:{wildcards.sample} LB:{wildcards.library} PL:ILLUMINA'
+        ' --outSAMattrRGline ID:{wildcards.sample} SM:{wildcards.sample} LB:{params.library} PL:{params.platform}'
         ' --alignIntronMax 1000000'
         ' --alignIntronMin 20'
         ' --alignMatesGapMax 1000000'

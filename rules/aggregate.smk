@@ -9,62 +9,81 @@
 
 def find_all_library(wildcards):
     return [
-        config['workspace'] + f'/samples/{wildcards.sample}/mapping/{library}_Aligned.out.bam'
-        for library in config['samples'][wildcards.sample]['fastq']
+        config['workspace'] + f'/samples/{wildcards.sample}/mapping/{unit}_Aligned.out.bam'
+        for unit in units['unit']
     ]
 
-
-rule count:
+rule countGene:
     output:
-        config['workspace'] + '/aggregate/{sample}_raw_count.txt'
+        config['workspace'] + '/aggregate/{sample}_gene_raw_count.txt'
     input:
         find_all_library
     log:
-        config['workspace'] + '/log/aggregate/{sample}/{sample}_htseq_count.log'
+        config['workspace'] + '/log/aggregate/{sample}/{sample}_gene_htseq_count.log'
     params:
-        gtf=config['genome']['gtf']
+        gtf=rules.genome.output.gtf #config['genome']['gtf']
+    shell:
+        'htseq-count -f bam -r name -s no -a 10 -t exon -i gene_id -m intersection-nonempty'
+        ' {input} {params.gtf} > {output} 2>{log}'
+
+rule countTranscript:
+    output:
+        config['workspace'] + '/aggregate/{sample}_transcipt_raw_count.txt'
+    input:
+        find_all_library
+    log:
+        config['workspace'] + '/log/aggregate/{sample}/{sample}_transcript_htseq_count.log'
+    params:
+        gtf=rules.genome.output.gtf #gtf=config['genome']['gtf']
     shell:
         'htseq-count -f bam -r name -s no -a 10 -t exon -i transcript_id -m intersection-nonempty'
         ' {input} {params.gtf} > {output} 2>{log}'
 
-
 rule merge_count:
     output:
-        raw=config['workspace'] + '/aggregate/all_sample_all_raw_counts.txt',
-        fpkm=config['workspace'] + '/aggregate/all_sample_all_fpkm.txt',
-        tpm=config['workspace'] + '/aggregate/all_sample_all_tpm.txt',
-        qnorm=config['workspace'] + '/aggregate/all_sample_all_tpm_qnorm.txt',
-        raw_ccds=config['workspace'] + '/aggregate/all_sample_ccds_raw_counts.txt',
-        fpkm_ccds=config['workspace'] + '/aggregate/all_sample_ccds_fpkm.txt',
-        tpm_ccds=config['workspace'] + '/aggregate/all_sample_ccds_tpm.txt',
-        qnorm_ccds=config['workspace'] + '/aggregate/all_sample_ccds_tpm_qnorm.txt'
+        rawGene=config['workspace'] + '/aggregate/all_sample_gene_raw_counts.txt',
+        fpkmGene=config['workspace'] + '/aggregate/all_sample_gene_fpkm.txt',
+        tpmGene=config['workspace'] + '/aggregate/all_sample_gene_tpm.txt',
+        rawTranscript=config['workspace'] + '/aggregate/all_sample_transcript_raw_counts.txt',
+        fpkmTranscript=config['workspace'] + '/aggregate/all_sample_transcript_fpkm.txt',
+        tpmTranscript=config['workspace'] + '/aggregate/all_sample_transcript_tpm.txt',
     input:
         expand(
-            config['workspace'] + '/aggregate/{sample}_raw_count.txt',
-            sample=config['samples']
+            config['workspace'] + '/aggregate/{sample}_{biounit}_raw_count.txt',
+            sample=samples['sample'], #config['samples']
+            biounit=['gene','transcipt']
         )
     params:
-        names=expand('{sample}', sample=config['samples'])
+        names=expand('{sample}', sample=samples['sample']),
+        gtf = rules.genome.output.gtf
     run:
+        # https://github.com/reneshbedre/bioinfokit/blob/master/bioinfokit/analys.py
         import pandas as pd
         import numpy as np
         import gtfparse
         import qnorm
+        from typing import Tuple
+        def parse_name(name)->Tuple[str,str,str]:
+            r'''return (sample,biounit,path)'''
+            return (*name.split('/')[-1].split('_')[:2],name)
+        paths = [parse_name(i) for i in input]
+        geneCounts = pd.concat([pd.read_table(i[-1], names=['id', i[0]], index_col=0) for i in paths if i[1] == 'gene'], axis=1).drop('id',axis=1)
+        transCounts = pd.concat([pd.read_table(i[-1], names=['id', i[0]], index_col=0) for i in paths if i[1] == 'transcipt'], axis=1).drop('id',axis=1)
+        geneCounts = geneCounts.loc[~geneCounts.index.str.startswith('__')]
+        transCounts = transCounts.loc[~transCounts.index.str.startswith('__')]
+        geneCounts.to_csv(output.rawGene, sep='\t', index_label='')
+        transCounts.to_csv(output.rawTranscript, sep='\t', index_label='')
 
-        counts = [
-            pd.read_table(file, names=['transcript_id', name], index_col=0, squeeze=True)
-            for name, file in zip(params.names, input)
-        ]
-        counts = pd.concat(counts, axis=1)
-        counts = counts.loc[~counts.index.str.startswith('__')]
-        counts.to_csv(output.raw, sep='\t', index_label='')
-
-        gtf = gtfparse.read_gtf(config['genome']['gtf'])
+        gtf = gtfparse.read_gtf(params.gtf) #config['genome']['gtf'])
         transcripts = gtf.loc[
-            (gtf['feature'] == 'transcript') & (gtf['transcript_type'] == 'protein_coding'), 'transcript_id'
-        ].values
+            (gtf['feature'] == 'transcript'), 'transcript_id'
+        ].drop_duplicates().values
+        genes = gtf.loc[
+            (gtf['feature'] == 'transcript'), 'gene_id'
+        ].drop_duplicates().values
 
-        total = counts.loc[transcripts].sum(0)
+        totalTrans = transCounts.loc[transcripts].sum(0)
+        totalGene = geneCounts.loc[genes].sum(0)
 
         def exon_length(exon):
             exon = exon.sort_values(['start', 'end'])
@@ -73,60 +92,14 @@ rule merge_count:
             return (width['end'] - width['start']).sum()
 
         exons = gtf[gtf['feature'] == 'exon']
-        length = exons.groupby('transcript_id').apply(exon_length)
+        lengthTrans = exons.groupby('transcript_id').apply(exon_length)
+        lengthGene = exons.groupby('gene_id').apply(exon_length)
+        (transCounts.loc[transcripts,:] * 10 ** 9 / totalTrans).div(lengthTrans[transcripts], axis=0).to_csv(output.fpkmTranscript, sep='\t', index_label='')
+        (geneCounts.loc[genes,:] * 10 ** 9 / totalGene).div(lengthGene[genes], axis=0).to_csv(output.fpkmGene, sep='\t', index_label='')
 
-        fpkm = (counts * 10 ** 9 / total).div(length, axis=0)
-        fpkm.to_csv(output.fpkm, sep='\t', index_label='')
+        def tpm(counts,length,index):
+            a = counts.loc[index,:].div(length[index], axis=0) * 1e3
+            return (a * 1e6) / a.sum()
 
-        a = counts.div(length, axis=0) * 1e3
-        tpm = (a * 1e6) / a.sum()
-        tpm.to_csv(output.tpm, sep='\t', index_label='')
-
-        norm = qnorm.quantile_normalize(np.log2(tpm+ 1))
-        norm.to_csv(output.qnorm, sep='\t', index_label='')
-
-        ccds = gtf[(gtf['feature'] == 'transcript') & (gtf['tag'].str.contains('CCDS'))].copy()
-        ccds['length'] = ccds['end'] - ccds['start']
-        ccds = ccds.sort_values('length').drop_duplicates('transcript_id', keep='last')
-
-        transcript_id = ccds['transcript_id'].values
-        transcript_name = ccds['transcript_name'].values
-
-        counts.loc[transcript_id].set_index(transcript_name).to_csv(output.raw_ccds, sep='\t', index_label='')
-        fpkm.loc[transcript_id].set_index(transcript_name).to_csv(output.fpkm_ccds, sep='\t', index_label='')
-        tpm.loc[transcript_id].set_index(transcript_name).to_csv(output.tpm_ccds, sep='\t', index_label='')
-        norm.loc[transcript_id].set_index(transcript_name).to_csv(output.qnorm_ccds, sep='\t', index_label='')
-
-rule comparisons:
-    output:
-        config['workspace'] + '/aggregate/comparisons.txt',
-        config['workspace'] + '/aggregate/metadata.txt'
-    input:
-        rules.merge_count.output
-    run:
-        import pandas as pd
-
-        meta = {sample: meta['meta'] for sample, meta in config['samples'].items()}
-        meta = pd.DataFrame.from_dict(meta, orient='index')
-        meta.to_csv(output[1], sep='\t')
-
-        meta_cols = list({
-            comparison['condition'] for comparison in config['comparisons'].values()
-        })
-        if len(meta_cols) == 0:
-            raise ValueError('comparisons not defind!')
-        meta = meta[meta_cols]
-
-        meta.to_csv(output[0], sep='\t')
-
-
-rule pcaplot:
-    output:
-        config['workspace'] + '/aggregate/all_sample_{set}_pcaplot.{fmt}',
-    input:
-        rules.comparisons.output[0],
-        config['workspace'] + '/aggregate/all_sample_{set}_tpm_qnorm.txt'
-    params:
-        script=lambda wildcards: f'{BASE_DIR}/tools/pcaplot.R'
-    shell:
-        'Rscript {params.script} {input} {output}'
+        tpm(transCounts, lengthTrans,transcripts).to_csv(output.tpmTranscript, sep='\t', index_label='')
+        tpm(geneCounts, lengthGene,genes).to_csv(output.tpmGene, sep='\t', index_label='')
